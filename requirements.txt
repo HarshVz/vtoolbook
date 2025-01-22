@@ -4,3 +4,5 @@ pydantic
 requests
 beautifulsoup4
 python-multipart
+selenium
+chromedriver-autoinstaller

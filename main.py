@@ -6,6 +6,13 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs
 
 from fastapi.middleware.cors import CORSMiddleware
+
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -14,6 +21,22 @@ app.add_middleware(
     allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
 )
+
+def extract_title(url):
+    # Setup chrome options
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Run in headless mode
+
+    # Setup the driver with options and executable path
+    service = Service(ChromeDriverManager().install())  # Manage driver installation
+    driver = webdriver.Chrome(service=service, options=chrome_options)  # Use service and options correctly
+
+    # Your code to extract the title
+    driver.get(url)
+    title = driver.title
+    driver.quit()
+    return title
+
 
 @app.get("/")
 async def root():
@@ -76,9 +99,8 @@ def extract_youtube_info(url):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Extract the title
-        title_tag = soup.find('meta', attrs={'name': 'title'})
-        title = title_tag['content'] if title_tag else "None"
-        # title = soup.title.string.strip() if soup.title else "None"
+        title = soup.title.string.strip() if soup.title else "None"
+        title = extract_title(url)
 
         # Construct the thumbnail URL
         thumbnail_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
