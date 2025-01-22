@@ -5,7 +5,15 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs
 
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,  # Allow cookies and credentials (optional)
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 @app.get("/")
 async def root():
