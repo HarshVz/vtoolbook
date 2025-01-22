@@ -76,7 +76,9 @@ def extract_youtube_info(url):
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Extract the title
-        title = soup.title.string.strip() if soup.title else "None"
+        title_tag = soup.find('meta', attrs={'name': 'title'})
+        title = title_tag['content'] if title_tag else "None"
+        # title = soup.title.string.strip() if soup.title else "None"
 
         # Construct the thumbnail URL
         thumbnail_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
