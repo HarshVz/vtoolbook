@@ -66,8 +66,12 @@ def extract_youtube_info(url):
         if not video_id:
             return {"Error": "Invalid YouTube URL. Could not extract video ID."}
 
-        # Fetch the YouTube page for the title
-        response = requests.get(url)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+        # Fetch the YouTube page with headers
+        response = requests.get(url, headers=headers)
         response.raise_for_status()  # Ensure the request was successful
         soup = BeautifulSoup(response.text, 'html.parser')
 
